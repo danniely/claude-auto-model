@@ -1,0 +1,8 @@
+{
+  "name": "auto-model",
+  "version": "0.1.0",
+  "description": "Cursor-style Auto mode for Claude Code: picks the model and effort for each prompt with a Haiku classifier.",
+  "author": { "name": "danniely" },
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}
