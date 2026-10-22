@@ -6,6 +6,11 @@ Stop switching `/model` and `/effort` by hand: every prompt is sent to the model
 
 > Unofficial community plugin, not an Anthropic product. It uses Claude Code's function-hooks plugin API, which is early access and may change between releases. Built and tested on Claude Code 2.1.308.
 
+_Demo_
+
+<img width="371" height="415" alt="Screenshot 2026-10-22 at 3 52 46 PM" src="https://github.com/user-attachments/assets/62a60f26-7a65-4d7f-ad10-b7a80d63b6ba" />
+
+
 ## What it is
 
 A Claude Code plugin (a "mod") that picks the model and the effort for each prompt you send:
