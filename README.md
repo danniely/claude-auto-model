@@ -1,6 +1,6 @@
 # claude-auto-model
 
-**Cursor Auto mode for Claude Code Desktop.**
+**Cursor Auto mode for Claude.**
 
 Stop switching `/model` and `/effort` by hand: every prompt is sent to the model and effort it needs.
 
