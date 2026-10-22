@@ -14,7 +14,17 @@ A Claude Code plugin (a "mod") that picks the model and the effort for each prom
 - "Add a test for this function" → Sonnet, medium effort
 - "Design the sharding strategy for our event store" → Opus, high effort
 
-It runs inside Claude Code itself, so it works in the Claude Desktop app's Code tab and in the terminal. There is no server, proxy, or API key to set up: it uses your session's own login.
+It runs inside Claude Code itself. There is no server, proxy, or API key to set up: it uses your session's own login.
+
+## Works with
+
+| Where | Supported |
+| --- | --- |
+| Claude Desktop app, Code tab | ✅ |
+| Claude Code CLI (`claude` in a terminal) | ✅ |
+| claude.ai web chat, Desktop Chat tab | ❌ (not Claude Code) |
+
+Both run the same Claude Code engine, so one user-scope install covers both. Requires a Claude Code version with the function-hooks `turn.step` event; tested on 2.1.308. On an older CLI, run `claude update` first.
 
 ## Why
 
