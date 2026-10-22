@@ -24,7 +24,7 @@ It runs inside Claude Code itself. There is no server, proxy, or API key to set 
 | Claude Code CLI (`claude` in a terminal) | ✅ |
 | claude.ai web chat, Desktop Chat tab | ❌ (not Claude Code) |
 
-Both run the same Claude Code engine, so one user-scope install covers both. Requires a Claude Code version with the function-hooks `turn.step` event; tested on 2.1.308. On an older CLI, run `claude update` first.
+Both run the same Claude Code engine, so one user-scope install covers both. Requires a Claude Code version with the function-hooks `turn.step` event; tested on 2.1.308. 2.1.247 does not load it, so run `claude update` first.
 
 ## Why
 
@@ -58,23 +58,40 @@ If the classifier fails, the previous tier is kept; with no previous tier, the s
 
 ## How to run it
 
-### 1. Install
+### 1. Update Claude Code
+
+The plugin needs a recent Claude Code. It is tested on 2.1.308; 2.1.247 installs it but does not load it.
+
+```bash
+claude update
+```
+
+```bash
+claude --version
+```
+
+### 2. Install
 
 From a shell:
 
 ```bash
-claude plugin install auto-model --marketplace danniely/claude-auto-model
+claude plugin marketplace add danniely/claude-auto-model
+```
+
+```bash
+claude plugin install auto-model@claude-auto-model
 ```
 
 Or at the prompt of a Claude Code terminal session:
 
 ```
-/plugin install auto-model --marketplace danniely/claude-auto-model
+/plugin marketplace add danniely/claude-auto-model
+/plugin install auto-model@claude-auto-model
 ```
 
-Answer `y` to add the marketplace, then pick the **user** scope. In the desktop app itself: click **+** next to the prompt box → **Plugins** → **Add marketplace** with `danniely/claude-auto-model` → **Add plugin**.
+It installs at the **user** scope by default. In the desktop app itself: click **+** next to the prompt box → **Plugins** → **Add marketplace** with `danniely/claude-auto-model` → **Add plugin**.
 
-### 2. Use Claude as usual
+### 3. Use Claude as usual
 
 Open a new session (Claude Desktop Code tab or `claude` in a terminal) and type prompts as you normally would. The routed model shows above the prompt:
 
@@ -84,7 +101,7 @@ auto · light → sonnet-5-5 · low
 
 The Desktop header keeps showing the session's own model; the line above the prompt is what each turn actually used.
 
-### 3. Tune it
+### 4. Tune it
 
 | Command | What it does |
 | --- | --- |
