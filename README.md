@@ -1,13 +1,41 @@
 # claude-auto-model
 
-Cursor-style Auto mode for Claude Code: picks the model and effort for each prompt with a Haiku classifier.
+**Cursor Auto mode for Claude Code Desktop.**
 
-> Unofficial community mod, not an Anthropic product. It uses Claude Code's function-hooks plugin API, which is early access and may change between releases. Built and tested on Claude Code 2.1.308.
+Stop switching `/model` and `/effort` by hand: every prompt is sent to the model and effort it needs.
+
+> Unofficial community plugin, not an Anthropic product. It uses Claude Code's function-hooks plugin API, which is early access and may change between releases. Built and tested on Claude Code 2.1.308.
+
+## What it is
+
+A Claude Code plugin (a "mod") that picks the model and the effort for each prompt you send:
+
+- "What is 2+2?" → Sonnet, low effort
+- "Add a test for this function" → Sonnet, medium effort
+- "Design the sharding strategy for our event store" → Opus, high effort
+
+It runs inside Claude Code itself, so it works in the Claude Desktop app's Code tab and in the terminal. There is no server, proxy, or API key to set up: it uses your session's own login.
+
+## Why
+
+Claude Code runs every prompt on one model and one effort until you change them. That leaves two bad defaults:
+
+- **Always the big model:** simple questions burn Opus tokens and usage limits.
+- **Always the small model:** hard tasks get a weaker answer unless you remember to switch.
+
+Choosing per prompt by hand is friction most people skip. Model choice is one of the largest levers on token cost, and it should not depend on remembering a slash command.
+
+## Inspiration
+
+- **Cursor's Auto mode.** Cursor routes each request through [Cursor Router](https://cursor.com/blog/router), a classifier that sends simple tasks to cheaper models and complex ones to frontier models, and counts the cost of cache misses when it switches.
+- **[anthropics/claude-code#43326](https://github.com/anthropics/claude-code/issues/43326).** "Auto-select model and effort level based on task complexity", a long-standing feature request. The thread notes that a `UserPromptSubmit` settings hook cannot change a running session's model. A function-hooks mod can, through the `turn.step` event.
+
+This plugin is a local, open take on the same idea: a small classifier and a routing table you control.
 
 ## How it works
 
-1. **Classify.** On each prompt, Haiku labels it `light`, `standard`, `deep`, or `same` (a short follow-up that keeps the previous tier). One short call per prompt: at most 16 output tokens, 6-second timeout.
-2. **Route.** The tier maps to a model and effort, and every request of that turn is sent with them (`turn.step` hook). Subagents are left alone.
+1. **Classify.** On each prompt, Haiku labels it `light`, `standard`, `deep`, or `same` (a short follow-up such as "ok, go ahead" that keeps the previous tier). One short call per prompt: at most 16 output tokens, 6-second timeout.
+2. **Route.** The tier maps to a model and effort, and every request of that turn is sent with them. Subagents are left alone.
 3. **Keep the cache.** A cheaper model reads none of the prompt cache the current one has warmed, so above 40k context tokens the model stays and only the effort changes.
 
 If the classifier fails, the previous tier is kept; with no previous tier, the session's own model and effort are used.
@@ -18,15 +46,9 @@ If the classifier fails, the previous tier is kept; with no previous tier, the s
 | `standard` | sonnet · medium |
 | `deep` | opus · high |
 
-The routed model is shown above the prompt (`auto · light → sonnet-5-5 · low`). The Claude Desktop header keeps showing the session's own model.
+## How to run it
 
-## Install
-
-At the prompt of a Claude Code terminal session:
-
-```
-/plugin install auto-model --marketplace danniely/claude-auto-model
-```
+### 1. Install
 
 From a shell:
 
@@ -34,9 +56,25 @@ From a shell:
 claude plugin install auto-model --marketplace danniely/claude-auto-model
 ```
 
-Answer `y` to add the marketplace, then pick the user scope. Installed at the user scope, it also loads in the sessions the Claude Desktop app's Code tab starts. In the desktop app itself: click **+** next to the prompt box → **Plugins** → **Add marketplace** with `danniely/claude-auto-model` → **Add plugin**.
+Or at the prompt of a Claude Code terminal session:
 
-## Commands
+```
+/plugin install auto-model --marketplace danniely/claude-auto-model
+```
+
+Answer `y` to add the marketplace, then pick the **user** scope. In the desktop app itself: click **+** next to the prompt box → **Plugins** → **Add marketplace** with `danniely/claude-auto-model` → **Add plugin**.
+
+### 2. Use Claude as usual
+
+Open a new session (Claude Desktop Code tab or `claude` in a terminal) and type prompts as you normally would. The routed model shows above the prompt:
+
+```
+auto · light → sonnet-5-5 · low
+```
+
+The Desktop header keeps showing the session's own model; the line above the prompt is what each turn actually used.
+
+### 3. Tune it
 
 | Command | What it does |
 | --- | --- |
