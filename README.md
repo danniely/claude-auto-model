@@ -1,5 +1,11 @@
 # claude-auto-model
 
+
+
+https://github.com/user-attachments/assets/1ab9dc85-4a71-4d94-8892-3a234e8f7c6f
+
+
+
 **Cursor Auto mode for Claude.**
 
 Stop switching `/model` and `/effort` by hand: every prompt is sent to the model and effort it needs.
